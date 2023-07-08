@@ -17,3 +17,6 @@ if (!('b' in window)) {
 }
 
 console.log(b)
+// 2
+// 1
+// undefined
