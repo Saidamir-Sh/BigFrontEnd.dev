@@ -32,6 +32,9 @@ type MyPick<T, K extends keyof T> = {[P in K]: T[P]} // first extends keys of T
 type MyOmit<T, K extends keyof T> = {
   [P in Exclude<keyof T, K>]: T[P]
 }
+type AltMyOmit<T, K extends keyof any> = {
+  [key in keyof T as key extends K ? never : key] : T[key]
+}
 
 
 // 7. Exclude<T, K> returns a type by removing from T the union members that are assignable to K.
@@ -130,7 +133,8 @@ type LengthOfTuple<T extends any[]> = T['length']
 
 
 // 24. Implement LengthOfString<T> to return the length of a string.
-type LengthOfString<T extends string> = T['length']
+type AltStringToTuple<T extends string> = T extends `${infer F}${infer R}` ? R extends '' ? [F] : [F, ...StringToTuple<R>] : []
+type LengthOfString<T extends string> = AltStringToTuple<T>['length']
 // type A = LengthOfString<'BFE.dev'> // 7
 // type B = LengthOfString<''> // 0
 
