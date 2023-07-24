@@ -13,3 +13,33 @@
 // curriedJoin(1, 2, 3) // '1_2_3'
 // curriedJoin(1)(2, 3) // '1_2_3'
 // curriedJoin(1, 2)(3) // '1_2_3'
+function curry(fn) {
+    // your code here
+    return function curried(...args) {
+      if (args.length >= fn.length) {
+        return fn(...args)
+      } else {
+        return function (...nextArgs) {
+          return curried(...args, ...nextArgs)
+        }
+      }
+    } 
+}
+
+// Explanation 
+function curry(f) { // curry(f) does the currying transform
+    return function(a) {
+      return function(b) {
+        return f(a, b);
+      };
+    };
+  }
+  
+  // usage
+  function sum(a, b) {
+    return a + b;
+  }
+  
+  let curriedSum = curry(sum);
+  
+  alert( curriedSum(1)(2) ); // 3
