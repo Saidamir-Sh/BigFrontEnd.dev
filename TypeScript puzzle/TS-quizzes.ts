@@ -168,3 +168,32 @@ type IsEmptyType<T> = T extends Record<string,string> ? [keyof T] extends [never
 // type D = IsEmptyType<any> // false
 // type E = IsEmptyType<object> // false
 // type F = IsEmptyType<Object> // false
+
+
+// 29. Implement Shift<T> to shift the first item of a tuple type.
+type Shift<T extends any[]> = T extends [infer F, ...infer Rest] ? Rest : [];
+// type A = Shift<[1,2,3]> // [2,3]
+// type B = Shift<[1]> // []
+// type C = Shift<[]> // []
+
+
+// 30. Implement IsAny<T> to check against any.
+type IsAny<T> = boolean extends (T extends never ? true : false) ? true : false; 
+// type A = IsAny<string> // false
+// type B = IsAny<any> // true
+// type C = IsAny<unknown> // false
+// type D = IsAny<never> // false
+
+
+// 31. Implement Push<T, I> to return a new type by pushing new type into tuple type.
+// type Push<T extends any[], I> = [...T, I]; // AI solution
+type Push<T extends any[], I> = T extends [...args: infer F] ? [...F, I] : never;
+// type A = Push<[1,2,3], 4> // [2,3]
+// type B = Push<[1], 2> // [1, 2]
+// type C = Push<[], string> // [string]
+
+
+// 32. Similar to String.prototype.repeat(), implement RepeatString<T, C> to create a new type by repeating string T for C times.
+type RepeatString<T extends string, C extends number, A extends string[] = []> = A['length'] extends C ? '' : `${T}${RepeatString<T, C, [T, ...A]>}`;
+// type A = RepeatString<'a', 3> // 'aaa'
+// type B = RepeatString<'a', 0> // ''
