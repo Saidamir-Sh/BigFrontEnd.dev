@@ -46,3 +46,37 @@
 // }
 
 // expect(run(['A@0', 'B@2', 'C@3'])).toEqual(['C@6'])
+
+// Notes : 
+// leading: whether to invoke right away
+// trailing: whether to invoke after the delay.
+
+function debounce(func, wait, option = {leading: false, trailing: true}) {
+    // in basic debounce we only needed a timer, since we are trailing/leading we have to keep track of lastArgs as well
+    let timer = null
+    let lastArgs = null
+
+    // if both leading and trailing are false then return null
+    if(!option.leading && !option.trailing) return () => null
+
+    return (...args) => {
+        // if we dont have timer and leading is true we have to invoke the callback right away
+        if(!timer && option.leading) {
+            func.apply(this, args)
+        } else {
+            // else capture arguments in lastArgs
+            lastArgs = args
+        }
+
+        // reset the timer
+        clearTimeout(timer)
+
+        timer = setTimeout(() => {
+            // invoke the callback function if trailing is true (case: invoke after delay) and if we have args
+            if(option.trailing && lastArgs) func.apply(this, lastArgs)
+            // reset the context
+            lastArgs = null
+            timer = null
+        }, wait)
+    }
+}
