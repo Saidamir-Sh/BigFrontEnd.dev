@@ -40,3 +40,53 @@
 // }
 
 // expect(run(['A@0', 'B@2', 'C@3'])).toEqual(['A@0', 'C@3'])
+
+// Explanation : 
+// Throttling (Rate limiting) - maximum number of times a function can be executed with the given time. In other words, we dont allow our function to be executed more than once in every X milliseconds
+
+// Basic implememtation of throttle function
+
+function throttle(fn, delay = 1000) {
+    let lastTime = 0
+    return (...args) => {
+        let now = new Date().getTime()
+        if(now - lastTime < delay) return
+        lastTime = now
+        return fn(...args)
+    }
+}
+
+
+// // BFE Accepted Solution:
+function throttleFunc(cb, delay = 1000) {
+    let shouldWait = false
+    let waitingArgs
+
+    const timeOutFunc = () => {
+        if(waitingArgs == null) {
+            shouldWait = false
+        } else {
+            cb(...waitingArgs)
+            waitingArgs = null
+            setTimeout(timeOutFunc, delay)
+        }
+    }
+
+    if(waitingArgs == null) {
+        shouldWait = false
+    }
+
+    return (...args) => {
+        //  if we are in waiting phase dont invoke the function
+        if(shouldWait) {
+            waitingArgs = args
+            return
+        }
+        // else call the functoin with the given args and set shoukdWait to true, becase if the user tries to execute the fucntion while delay is not counted down, we dont invoke the callback again
+        cb(...args)
+        shouldWait = true
+        // after the delay passed set the should wait to false so we can again invoke the callback function
+        setTimeout(timeOutFunc, delay)
+    }
+}
+
