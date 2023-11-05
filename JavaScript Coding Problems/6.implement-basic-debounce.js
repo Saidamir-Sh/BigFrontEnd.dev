@@ -36,3 +36,22 @@
 // }
 
 // expect(run(['A@0', 'B@2', 'C@3'])).toEqual(['C@5'])
+
+// Basic Implementation:
+// 1. initialize the timer
+// 2. clear 
+
+function debounce(func, wait) {
+    // set a timer
+    let timer
+    return (...args) => {
+        // reset the previous timer 
+        clearTimeout(timer)
+
+        // initialize the timer to invoke the function
+        timer = setTimeout(() => {
+            func.apply(this, args)
+        }, wait)
+    }
+  }
+  
