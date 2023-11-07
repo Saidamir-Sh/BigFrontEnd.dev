@@ -4,3 +4,12 @@
 // notes:
 // Inputs are all non-negative integers
 // if none found, return -1
+
+function firstBadVersion(isBad) {
+	// firstBadVersion receive a check function isBad
+  // and should return a closure which accepts a version number(integer)
+  return (version) => {
+    // write your code to return the first bad version
+    // if none found, return -1
+  }
+}
