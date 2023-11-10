@@ -39,5 +39,7 @@
  * @return {(arg: any) => any}
  */
 function pipe(funcs) {
-	// your code here
+	return (input) => {
+		return funcs.reduce((result, func) => func(result), input)
+	}
 }
