@@ -8,7 +8,24 @@
 function firstBadVersion(isBad) {
 	// firstBadVersion receive a check function isBad
   // and should return a closure which accepts a version number(integer)
+  let min = 0;
+  let max;
+
   return (version) => {
+    let left = min
+    let right = max || version
+
+    while(left <= right) {
+      let mid = Math.floor((left + right) / 2)
+      if(isBad(mid)) {
+        right = mid - 1
+        max = right
+      } else {
+        left = mid + 1
+        min = left
+      }
+    }
+    return left <= version ? left : -1
     // write your code to return the first bad version
     // if none found, return -1
   }
