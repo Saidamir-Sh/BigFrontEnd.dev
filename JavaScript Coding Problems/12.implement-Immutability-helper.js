@@ -48,7 +48,7 @@
 // }
 
 // const newState = update(
-//   state, 
+//   state,
 //   {a: {b: { c: {$set: 3}}}}
 // )
 // /*
@@ -65,7 +65,7 @@
 
 // const arr = [1, 2, 3, 4]
 // const newArr = update(
-//   arr, 
+//   arr,
 //   {0: {$set: 0}}
 // )
 // //  [0, 2, 3, 4]
@@ -80,7 +80,7 @@
 // }
 
 // const newState = update(
-//   state, 
+//   state,
 //   {a: {b: { $merge: {e: 5}}}}
 // )
 // /*
@@ -99,11 +99,35 @@
 // const newArr = update(arr, {0: {$apply: (item) => item * 2}})
 // // [2, 2, 3, 4]
 
-
 /**
  * @param {any} data
  * @param {Object} command
  */
 function update(data, command) {
-    // your code here
+  for (const [key, value] of Object.entries(command)) {
+    switch (key) {
+      case "$push":
+        return [...data, ...value];
+      case "$set":
+        return value;
+      case "$merge":
+        if (!(data instanceof Object)) {
+          throw Error("Value is not object, can not merge");
+        }
+        return { ...data, ...value };
+      case "$apply":
+        return value(data);
+      default:
+        if (data instanceof Array) {
+          const res = [...data];
+          res[key] = update(data[key], value);
+          return res;
+        } else {
+          return {
+            ...data,
+            [key]: update(data[key], value),
+          };
+        }
+    }
   }
+}
