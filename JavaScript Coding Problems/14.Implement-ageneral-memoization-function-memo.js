@@ -35,6 +35,25 @@
  * @param {Function} func
  * @param {(args:[]) => string }  [resolver] - cache key generator
  */
-function memo(func, resolver) {
-    // your code here
+
+// Memoization and Parameters
+// Generally, memoization always follows the same scheme:
+
+// Check if we already have a result.
+// If yes, return it.
+// If no, calculate the result and store it for the next time.
+
+function memo(func, resolver = (...args) => Array.from(args).join('-')) {
+  let cachedMap = new Map()
+  
+  return function memoized(...args) {
+    let key = resolver(...args)
+    if(cachedMap.has(key)) {
+      return cachedMap.get(key)
+    } else {
+      let result = func.apply(this, args)
+      cachedMap.set(key, result)
+      return result
+    }
   }
+}
