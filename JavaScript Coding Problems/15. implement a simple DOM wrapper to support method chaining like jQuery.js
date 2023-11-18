@@ -11,9 +11,17 @@
 // The wrapper only needs to have css(propertyName: string, value: any)
 
 
+
 /**
  * @param {HTMLElement} el - element to be wrapped
  */
 function $(el) {
-    // your code here
+    // const element = document.querySelector(el)
+  
+    return {
+      css: function(propertyName, value) {
+        el.style[propertyName] = value
+        return this
+      }
+    }
   }
