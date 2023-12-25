@@ -20,7 +20,7 @@
  */
 function stringify(data) {
   if (typeof data === 'bigint') {
-    return new Error('Does not know how to serialize this type of data.');
+    throw new Error('Does not know how to serialize this type of data.');
   }
 
   if (
@@ -33,6 +33,10 @@ function stringify(data) {
     typeof data === 'symbol'
   ) {
     return 'null';
+  }
+
+  if (data instanceof Date) {
+    return `"${data.toISOString()}"`;
   }
 
   if (typeof data === 'string') {
@@ -49,9 +53,6 @@ function stringify(data) {
 
   if (Array.isArray(data)) {
     let result = [];
-    // data.reduce((acc, currVal) => {
-    //   result.push(stringify(currVal));
-    // }, []);
     data.map((currentVal) => {
       result.push(stringify(currentVal));
     });
@@ -59,14 +60,22 @@ function stringify(data) {
   }
 
   if (typeof data === 'object') {
+    let objResult = [];
     for (const [key, value] of Object.entries(data)) {
-      console.log(`{${key}: }`);
-      // stringify(value);
+      if (typeof value === 'function') return;
+      if (value !== undefined) {
+        objResult.push(`"${key}":${stringify(value)}`);
+      }
     }
+    return `{${objResult.join(',')}}`;
   }
 }
 
+let map = new Map();
+map.a = 'hello';
+
 let inputObject = {
+  undefinedVal: undefined,
   arrayVals: [
     function () {},
     Symbol(''),
@@ -79,6 +88,8 @@ let inputObject = {
   stringVal: 'hello world',
   numberVal: 42,
   booleanVal: true,
+  dateObject: new Date(),
+  mapObject: map,
   nestedObject: {
     functionKey: function () {},
     symbolKey: Symbol(''),
@@ -98,8 +109,8 @@ let inputArray = [
   Infinity,
   true,
 ];
-console.log(stringify(inputArray));
-// console.log(stringify(inputObject));
+// console.log(stringify(inputArray));
+console.log(stringify(inputObject));
 
 // EXPLANATION :
 console.log('--------- Explanation logs ----------------');
