@@ -107,3 +107,68 @@ class PriorityQueue {
     
   }
 }
+
+console.log('--------------------   Solution Logs   --------------------');
+
+console.log('--------------------   Explanation Logs   --------------------');
+
+// Queue is fundamental data structure (considered Abstract Data type) (linear data structure), uses FIFO(first in, first out) principle
+
+// Basic operations:
+// enqueue -> add & return item at the end of the queue
+// dequeue -> remove & return item from front, first item of the queue
+// peek -> return front item in queue (first item)
+// isEmpty -> check if queue is empty
+// size -> return size of the queue
+
+// Implementation
+// Queue can be implemented based on array, linked-list, heap, and BST data structure (mostly array and linked list but depend on the operations you want to use on it since time and space complexity differs for each data strture)
+
+// Time and space complexity of Queue
+
+//                     | Intsert  |  Delete   |   Access  |   Search
+// Queue (array-based) |  O(1)    |   O(1)    |     O(n)  |    O(n)
+
+// Example Implementation of Basic Queue using Arrays (insufficient for large dataset)
+
+class Queue {
+  constructor() {
+    this.items = [];
+  }
+
+  enqueue(item) {
+    this.items.push(item); // return array.push  -> returns new length of the array
+  }
+
+  dequeue() {
+    if (this.isEmpty()) return 'Underflow';
+    return this.items.shift();
+  }
+
+  peek() {
+    return !this.isEmpty() ? this.items[0] : 'Queue is empty !';
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  size() {
+    return this.items.length;
+  }
+}
+
+const basicQueue = new Queue();
+
+console.log(basicQueue.isEmpty()); // true
+console.log(basicQueue.size()); // 0
+console.log(basicQueue.peek()); // Queue is empty !
+console.log(basicQueue.enqueue(1)); // logs undefined this we are not returning any type
+console.log(basicQueue.enqueue(2)); // logs undefined this we are not returning any type
+console.log(basicQueue.enqueue(3)); // logs undefined this we are not returning any type
+console.log(basicQueue.enqueue(4)); // logs undefined this we are not returning any type
+console.log(basicQueue.enqueue(5)); // logs undefined this we are not returning any type
+console.log(basicQueue.size()); // 5 // size of items in queue
+console.log(basicQueue.dequeue()); // 1 front item removed
+
+// Example Implementation of Basic Queue using Linked List
