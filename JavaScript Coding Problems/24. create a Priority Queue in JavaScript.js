@@ -129,7 +129,7 @@ console.log('--------------------   Explanation Logs   --------------------');
 //                     | Intsert  |  Delete   |   Access  |   Search
 // Queue (array-based) |  O(1)    |   O(1)    |     O(n)  |    O(n)
 
-// Example Implementation of Basic Queue using Arrays (insufficient for large dataset)
+// Example Implementation of Basic Queue using Arrays (insufficient for large dataset, because pop, shift, unshift moves the array on memory (ex. movie seats example from Grokking algorithms book on Linked List Chapter))
 
 class Queue {
   constructor() {
@@ -160,6 +160,7 @@ class Queue {
 
 const basicQueue = new Queue();
 
+console.log('Queue Array based');
 console.log(basicQueue.isEmpty()); // true
 console.log(basicQueue.size()); // 0
 console.log(basicQueue.peek()); // Queue is empty !
@@ -171,4 +172,68 @@ console.log(basicQueue.enqueue(5)); // logs undefined this we are not returning 
 console.log(basicQueue.size()); // 5 // size of items in queue
 console.log(basicQueue.dequeue()); // 1 front item removed
 
-// Example Implementation of Basic Queue using Linked List
+// Example Implementation of Basic Queue using Linked List (Efficient for large datasets because)
+
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class QueueLinkedList {
+  constructor() {
+    this.first = null;
+    this.last = null;
+    this.size = 0;
+  }
+
+  isEmpty() {
+    return !this.size;
+  }
+
+  // add new node at the end and return
+  enqueue(value) {
+    let newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      // if queue is empty set the first and last element to the new node
+      this.first = newNode;
+      this.last = newNode;
+    } else {
+      this.last.next = newNode; // set the last node to new node
+      this.last = newNode; // update the last node
+    }
+    this.size++;
+    return this;
+  }
+
+  // return the first node
+  dequeue() {
+    if (this.isEmpty()) return;
+    let itemToBeRemoved = this.first;
+
+    if (this.first === this.last) {
+      this.last = null;
+    }
+
+    this.first = this.first.next;
+    this.size--;
+    return itemToBeRemoved;
+  }
+
+  peek() {
+    return this.first;
+  }
+}
+
+console.log('Queue Linked List');
+const queueLinkedList = new QueueLinkedList();
+console.log(queueLinkedList.isEmpty());
+console.log(queueLinkedList.size);
+console.log(queueLinkedList.enqueue(1));
+console.log(queueLinkedList.enqueue(2));
+console.log(queueLinkedList.enqueue(3));
+console.log(queueLinkedList.enqueue(4));
+console.log(queueLinkedList.dequeue());
+console.log(queueLinkedList.size);
