@@ -237,3 +237,73 @@ console.log(queueLinkedList.enqueue(3));
 console.log(queueLinkedList.enqueue(4));
 console.log(queueLinkedList.dequeue());
 console.log(queueLinkedList.size);
+
+
+
+// Priority Queue
+console.log("------------ Priority Queue ---------")
+
+
+// priority queue is another type of queue where each element has a priority assigned to it. In a standard queue, the elements are dequeued based on the order of insertion (FIFO - First In, First Out). However, in a priority queue, the elements are dequeued based on their priority, not the order of insertion.
+
+// Basic Operations of Priority Queue:
+// enqueue(item, priority): Adds an item with a given priority to the priority queue.
+// dequeue(): Removes and returns the item with the highest priority from the priority queue.
+// peek(): Returns the item with the highest priority without removing it.
+// isEmpty(): Checks if the priority queue is empty.
+// size(): Returns the number of elements in the priority queue.
+
+// enqueue(item, priority): O(log n)
+// dequeue(): O(log n)
+// peek(): O(1)
+// isEmpty(): O(1)
+// size(): O(1)
+
+
+
+class PriorityQueue {
+  constructor() {
+    this.items = [];
+  }
+
+  enqueue(item, priority) {
+    const queueElement = { item, priority };
+    let added = false;
+    for (let i = 0; i < this.items.length; i++) {
+      if (queueElement.priority < this.items[i].priority) {
+        this.items.splice(i, 0, queueElement);
+        added = true;
+        break;
+      }
+    }
+    if (!added) {
+      this.items.push(queueElement);
+    }
+  }
+
+  dequeue() {
+    return this.isEmpty() ? 'Underflow' : this.items.shift().item;
+  }
+
+  peek() {
+    return !this.isEmpty() ? this.items[0].item : 'Queue is empty!';
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  size() {
+    return this.items.length;
+  }
+}
+
+// Example Usage:
+const pq = new PriorityQueue();
+pq.enqueue('Task 1', 3);
+pq.enqueue('Task 2', 1);
+pq.enqueue('Task 3', 2);
+
+console.log(pq.dequeue()); // Output: Task 2
+console.log(pq.dequeue()); // Output: Task 3
+console.log(pq.dequeue()); // Output: Task 1
