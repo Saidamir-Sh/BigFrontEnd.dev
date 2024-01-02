@@ -44,3 +44,28 @@ Common Aspects of Normalizing URL:
 4. Query Parameters -> sort query params alphabetically to maintain consistent ordering, remove duplicate params, ensure special chars are correctly used
 5. Fragment identifiers -> fragment identifiers (#) are client-side and not sent to servers so standardize their usage can help avoid potential confusion
 */
+
+console.log('-------------------- URL() -------------------');
+
+// new URL() --> parse, constructor, normalize, encode URLs. works by providing properties that allows easily read and modify components of URL
+
+// if browser does not support URL interface alternative is to use Window
+
+const exampleURL =
+  'https://www.example.com:8080/path/to/page?query1=value1&query2=value2#section';
+
+const urlObject = new URL(exampleURL);
+
+console.log(urlObject); // "https://www.example.com:8080/path/to/page?query=value#section"
+console.log(urlObject.hash); // #section -> fragment identification
+console.log(urlObject.host); // www.example.com:8080 -> subdomain.domain.tld:port
+console.log(urlObject.hostname); // www.example.com -> subdomain.domain.tld
+console.log(urlObject.href); // "https://www.example.com:8080/path/to/page?query=value#section" -> string representation
+console.log(urlObject.origin); // https://www.example.com:8080 -> return string containing protocol://subdomain.domain.tld:port
+console.log(urlObject.password); // empty string, because we dont have user before domain
+console.log(urlObject.username); // empty string, because we dont have user before domain
+
+console.log(urlObject.pathname); // /path/to/page
+console.log(urlObject.port); // 8080 return port
+console.log(urlObject.search); // ?query1=value1&query2=value2
+console.log(urlObject.searchParams.get('query1')); // value1
