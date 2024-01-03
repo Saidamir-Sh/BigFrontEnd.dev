@@ -87,3 +87,5 @@ console.log(urlObject.pathname); // /path/to/page
 console.log(urlObject.port); // 8080 return port
 console.log(urlObject.search); // ?query1=value1&query2=value2
 console.log(urlObject.searchParams.get('query1')); // value1
+
+// More on this topic: https://datatracker.ietf.org/doc/html/rfc3986
