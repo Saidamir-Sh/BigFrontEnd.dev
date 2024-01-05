@@ -89,3 +89,153 @@ console.log(urlObject.search); // ?query1=value1&query2=value2
 console.log(urlObject.searchParams.get('query1')); // value1
 
 // More on this topic: https://datatracker.ietf.org/doc/html/rfc3986
+
+/**
+ * This function counts how many unique normalized valid URLs were passed to the function
+ *
+ * Accepts a list of URLs
+ *
+ * Example:
+ *
+ * input: ['https://example.com']
+ * output: 1
+ *
+ * Notes:
+ *  - assume none of the URLs have authentication information (username, password).
+ *
+ * Normalized URL:
+ *  - process in which a URL is modified and standardized: https://en.wikipedia.org/wiki/URL_normalization
+ *
+ *    For example.
+ *    These 2 urls are the same:
+ *    input: ["https://example.com", "https://example.com/"]
+ *    output: 1
+ *
+ *    These 2 are not the same:
+ *    input: ["https://example.com", "http://example.com"]
+ *    output 2
+ *
+ *    These 2 are the same:
+ *    input: ["https://example.com?", "https://example.com"]
+ *    output: 1
+ *
+ *    These 2 are the same:
+ *    input: ["https://example.com?a=1&b=2", "https://example.com?b=2&a=1"]
+ *    output: 1
+ */
+
+
+// Further Improvement : 
+// remove duplicate query params with the same key/value, handle cases while sorting params where value or key includes non English chars
+// Check reserved chars are correctly encoded and decoded
+
+function normalizeURL(url: string): string {
+  try {
+      const parsedURL = new URL(url);
+      const urlQueryParams = new URLSearchParams(parsedURL.search);
+
+      // hostname and protocol are case-sensitive, fragment identifiers are not necessary
+      parsedURL.hash = "";
+      parsedURL.hostname = parsedURL.hostname.toLowerCase();
+      parsedURL.protocol = parsedURL.protocol.toLowerCase();
+
+      // remove dot segments and trailing slashes from path
+      parsedURL.pathname = removeDotSegments(parsedURL.pathname)
+      parsedURL.pathname = parsedURL.pathname.replace(/\/+$/, "");
+
+      // sort the query params
+      urlQueryParams.sort();
+      parsedURL.search = urlQueryParams.toString(); 
+
+      // remove default ports if included
+      if(
+          (parsedURL.protocol === "https" && parsedURL.port === "443") ||
+          (parsedURL.protocol === "http" && parsedURL.port === "80")
+      ) {
+          parsedURL.port = "";
+      };
+
+      // remove "www." prefix from hostname if included
+      if(parsedURL.hostname.startsWith("www.")) {
+          parsedURL.hostname = parsedURL.hostname.slice(4)
+      };
+
+      return parsedURL.toString();
+
+  } catch (error) {
+      throw new Error("Invalid URL")  
+  }
+}
+
+function removeDotSegments(path: string): string {
+  const pathNames = path.split("/");
+  const output: string[] = [];
+
+  pathNames.forEach((segment) => {
+      if(segment === "..") {
+          output.pop();
+      } else if (segment !== ".") {
+          output.push(segment);
+      }
+  });
+
+  return (path.startsWith("/") ? "" : "/") + output.join("/");
+}
+
+export function countUniqueUrls(urls?: string[]): number {
+  const countSet = new Set();
+
+  if(urls) {
+      for(let i = 0; i < urls.length; i++) {
+          const normalizedURL = normalizeURL(urls[i]);
+          countSet.add(normalizedURL);
+      }
+  }
+
+  return countSet.size;
+}
+
+/**
+* This function counts how many unique normalized valid URLs were passed to the function per top level domain
+*
+* A top level domain is a domain in the form of example.com. Assume all top level domains end in .com
+* subdomain.example.com is not a top level domain.
+*
+* Accepts a list of URLs
+*
+* Example:
+*
+* input: ["https://example.com"]
+* output: Hash["example.com" => 1]
+*
+* input: ["https://example.com", "https://subdomain.example.com"]
+* output: Hash["example.com" => 2]
+*
+*/
+
+function getTopLevelDomain(url: string): string {
+  const parsedURL = new URL(normalizeURL(url));
+  const domainParts = parsedURL.hostname.split('.');
+
+  if (domainParts.length > 2) {
+    return domainParts.slice(1).join('.');
+  } else {
+    return domainParts.join('.');
+  }
+}
+
+export function countUniqueUrlsPerTopLevelDomain(urls?: string[]): Record<string, number> {
+  const TLDRecord: Record<string, number> = {};
+
+  if(urls) {
+      for(const url of urls) {
+          const TLDomain = getTopLevelDomain(url);
+          if(TLDRecord[TLDomain]) {
+              TLDRecord[TLDomain]++;
+          } else {
+              TLDRecord[TLDomain] = 1;
+          }
+      }
+  }
+  return TLDRecord;
+}
