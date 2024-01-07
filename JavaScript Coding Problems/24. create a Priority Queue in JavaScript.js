@@ -261,40 +261,46 @@ console.log("------------ Priority Queue ---------")
 
 
 
+
+// complete the implementation
 class PriorityQueue {
-  constructor() {
-    this.items = [];
+  /**
+   * @param {(a: any, b: any) => -1 | 0 | 1} compare - 
+   * compare function, similar to parameter of Array.prototype.sort
+   */
+  constructor(compare) {
+    this.compare = compare;
+    this.queue = [];
   }
 
-  enqueue(item, priority) {
-    const queueElement = { item, priority };
-    let added = false;
-    for (let i = 0; i < this.items.length; i++) {
-      if (queueElement.priority < this.items[i].priority) {
-        this.items.splice(i, 0, queueElement);
-        added = true;
-        break;
-      }
-    }
-    if (!added) {
-      this.items.push(queueElement);
-    }
-  }
-
-  dequeue() {
-    return this.isEmpty() ? 'Underflow' : this.items.shift().item;
-  }
-
-  peek() {
-    return !this.isEmpty() ? this.items[0].item : 'Queue is empty!';
-  }
-
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
+  /**
+   * return {number} amount of items
+   */
   size() {
-    return this.items.length;
+    return this.queue.length;
+  }
+
+  /**
+   * returns the head element
+   */
+  peek() {
+    return this.queue[0];
+  }
+
+  /**
+   * @param {any} element - new element to add
+   */
+  add(element) {
+    this.queue.push(element)
+    this.queue.sort(this.compare);
+  }
+
+  /**
+   * remove the head element
+   * @return {any} the head element
+   */
+  poll() {
+    return this.queue.shift()
   }
 }
 
@@ -307,3 +313,5 @@ pq.enqueue('Task 3', 2);
 console.log(pq.dequeue()); // Output: Task 2
 console.log(pq.dequeue()); // Output: Task 3
 console.log(pq.dequeue()); // Output: Task 1
+
+// TODO: Later implement it with Heap 
